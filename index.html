@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #game {
+            margin: auto;
+        }
+
+        .hole {
+            width: 100px;
+            height: 100px;
+            background-color: #fff;
+        }
+
+        .rock {
+            background: url(./Assets/rock.png);
+        }
+
+        .paper {
+            background: url(./Assets/paper.png);
+        }
+
+        .scissors {
+            background: url(./Assets/scissors.png);
+        }
+
+        .win {
+            background: url(./Assets/win.png);
+        }
+
+        .lose {
+            background: url(./Assets/lose.png);
+        }
+
+        #playerRound {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="game">
+        <table border="1">
+            <tr>
+                <td class="hole" id="hole7"></td>
+                <td class="hole" id="hole8"></td>
+                <td class="hole" id="hole9"></td>
+            </tr>
+            <tr>
+                <td class="hole" id="hole4"></td>
+                <td class="hole" id="hole5"></td>
+                <td class="hole" id="hole6"></td>
+            </tr>
+            <tr>
+                <td class="hole" id="hole1"></td>
+                <td class="hole" id="hole2"></td>
+                <td class="hole" id="hole3"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="playerRound"></div>
+
+    <input type="button" value="開始遊戲" id="startBtn"> <br>
+    得分：<span id="scoreText">0</span><br>
+    剩餘時間：<span id="timeText">0</span>
+
+    <script>
+        const holes = document.getElementsByClassName("hole");
+        const startBtn = document.getElementById("startBtn");
+        const scoreText = document.getElementById("scoreText")
+        const timeText = document.getElementById("timeText")
+        const playerRound = document.getElementById("playerRound")
+
+        let isPlaying = false;
+        let score = 0;
+        let timeLeft = 10;
+        let timer = 0;
+
+        let Bang = ["rock", "paper", "scissors"];
+        let playerBang = "rock";
+
+
+        startBtn.onclick = () => {
+            startBtn.disabled = true;
+
+            init();
+
+            timer = setInterval(game, 1000);
+            game();
+
+            isPlaying = true;
+        }
+
+        const game = () => {
+            //時間倒數
+            timeLeft--;
+            timeText.innerText = timeLeft;
+
+            //清除上次的洞
+            clearHole();
+
+            //玩家本場出的拳
+            let rPlayerBang = Math.floor(Math.random() * 3);
+            playerBang = Bang[rPlayerBang];
+            playerRound.classList.add(playerBang);
+            for (let hole of holes) {
+                hole.style.cursor = `url(./Assets/${playerBang}.png),auto`;
+            }
+
+            //本次的洞要出的拳
+            for (let i = 0; i < 3; i++) {
+                let rHole = Math.floor(Math.random() * 9);
+                if (holes[rHole].classList.contains(Bang[0]) || holes[rHole].classList.contains(Bang[1]) || holes[rHole].classList.contains(Bang[2])) {
+                    i--;
+                    continue;
+                }
+                let rBang = Math.floor(Math.random() * 3);
+                holes[rHole].classList.add(Bang[rBang]);
+            }
+
+            //時間到的時候要做的事情
+            if (timeLeft == 0 && isPlaying) {
+                isPlaying = false;
+                startBtn.disabled = false;
+                clearInterval(timer);
+                clearHole();
+                init();
+                alert("時間到!")
+            }
+        }
+
+        //遊戲初始化
+        const init = () => {
+            clearHole();
+            score = 0;
+            scoreText.innerText = score;
+            timeLeft = 10;
+            timeText.innerText = timeLeft;
+        }
+
+        //清除場上的洞
+        const clearHole = () => {
+            for (let hole of holes) {
+                hole.classList.remove("rock");
+                hole.classList.remove("paper");
+                hole.classList.remove("scissors");
+                hole.classList.remove("win");
+                hole.classList.remove("lose");
+            }
+            playerRound.classList.remove(playerBang);
+        }
+
+        //玩家點擊洞之後，要判斷輸贏
+        for (let hole of holes) {
+            hole.onclick = () => {
+                if (isPlaying) {
+                    let win = (playerBang == "rock" && hole.classList.contains("scissors")) || (playerBang == "paper" && hole.classList.contains("rock")) || (playerBang == "scissors" && hole.classList.contains("paper"));
+
+                    let lose = (playerBang == "rock" && hole.classList.contains("paper")) || (playerBang == "paper" && hole.classList.contains("scissors")) || (playerBang == "scissors" && hole.classList.contains("rock"));
+
+
+                    if (win) {
+                        score++;
+                        hole.classList.add("win");
+                    }
+                    else if (lose) {
+                        score--;
+                        hole.classList.add("lose");
+                    }
+
+                    scoreText.innerText = score;
+                    hole.classList.remove("rock");
+                    hole.classList.remove("paper");
+                    hole.classList.remove("scissors");
+                }
+            }
+        }
+
+
+    </script>
+
+
+
+
+
+</body>
+
+</html>
