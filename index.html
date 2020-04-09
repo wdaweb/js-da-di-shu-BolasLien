@@ -39,6 +39,28 @@
         #playerRound {
             width: 100px;
             height: 100px;
+            margin: auto;
+        }
+
+        #controller,
+        #information {
+            width: 300px;
+            margin: auto;
+            text-align: center;
+        }
+
+
+
+        #recordBox {
+            width: 500px;
+            margin: auto;
+            text-align: center;
+            font-size: 30px;
+        }
+
+        #record {
+            list-style: none;
+
         }
     </style>
 
@@ -46,7 +68,11 @@
 
 <body>
     <div id="game">
-        <table border="1">
+        <div id="information">
+            得分：<span id="scoreText">0</span><br>
+            剩餘時間：<span id="timeText">0</span>
+        </div>
+        <table border="1" align="center">
             <tr>
                 <td class="hole" id="hole7"></td>
                 <td class="hole" id="hole8"></td>
@@ -63,20 +89,32 @@
                 <td class="hole" id="hole3"></td>
             </tr>
         </table>
+
+
+        <div id="controller">
+            <div id="playerRound"></div>
+
+            <input type="button" value="開始遊戲" id="startBtn"> <br>
+        </div>
+
+
     </div>
 
-    <div id="playerRound"></div>
 
-    <input type="button" value="開始遊戲" id="startBtn"> <br>
-    得分：<span id="scoreText">0</span><br>
-    剩餘時間：<span id="timeText">0</span>
+    <hr>
+    <div id="recordBox">
+        成績紀錄
+        <ul id="record"></ul>
+    </div>
+
 
     <script>
         const holes = document.getElementsByClassName("hole");
         const startBtn = document.getElementById("startBtn");
-        const scoreText = document.getElementById("scoreText")
-        const timeText = document.getElementById("timeText")
-        const playerRound = document.getElementById("playerRound")
+        const scoreText = document.getElementById("scoreText");
+        const timeText = document.getElementById("timeText");
+        const playerRound = document.getElementById("playerRound");
+        const record = document.getElementById("record");
 
         let isPlaying = false;
         let score = 0;
@@ -111,7 +149,7 @@
             playerBang = Bang[rPlayerBang];
             playerRound.classList.add(playerBang);
             for (let hole of holes) {
-                hole.style.cursor = `url(./Assets/${playerBang}.png),auto`;
+                hole.style.cursor = `url(./Assets/${playerBang}.png) 50 50,auto`;
             }
 
             //本次的洞要出的拳
@@ -130,9 +168,12 @@
                 isPlaying = false;
                 startBtn.disabled = false;
                 clearInterval(timer);
-                clearHole();
+
+                let inputName = prompt("時間到!，請輸入你的名字~")
+                record.innerHTML += `<li>${inputName}從猜拳遊戲中獲得了${score}分</li>`
+
+
                 init();
-                alert("時間到!")
             }
         }
 
@@ -153,6 +194,7 @@
                 hole.classList.remove("scissors");
                 hole.classList.remove("win");
                 hole.classList.remove("lose");
+                hole.style.cursor = "";
             }
             playerRound.classList.remove(playerBang);
         }
