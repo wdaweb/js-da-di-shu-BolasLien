@@ -13,7 +13,9 @@
         .hole {
             width: 100px;
             height: 100px;
-            background-color: #fff;
+            border-radius: 20%;
+            box-shadow: 3px 3px 5px #999;
+
         }
 
         .rock {
@@ -36,6 +38,24 @@
             background: url(./Assets/lose.png);
         }
 
+        .showUp {
+            animation: showUp 1s forwards;
+        }
+
+        @keyframes showUp {
+            from {
+                transform: scale(0);
+            }
+
+            50% {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(0);
+            }
+        }
+
         #playerRound {
             width: 100px;
             height: 100px;
@@ -48,8 +68,6 @@
             margin: auto;
             text-align: center;
         }
-
-
 
         #recordBox {
             width: 500px;
@@ -68,11 +86,8 @@
 
 <body>
     <div id="game">
-        <div id="information">
-            得分：<span id="scoreText">0</span><br>
-            剩餘時間：<span id="timeText">0</span>
-        </div>
-        <table border="1" align="center">
+
+        <table id="realHole" border="1" align="center">
             <tr>
                 <td class="hole" id="hole7"></td>
                 <td class="hole" id="hole8"></td>
@@ -93,10 +108,13 @@
 
         <div id="controller">
             <div id="playerRound"></div>
-
             <input type="button" value="開始遊戲" id="startBtn"> <br>
         </div>
 
+        <div id="information">
+            得分：<span id="scoreText">0</span><br>
+            剩餘時間：<span id="timeText">0</span>
+        </div>
 
     </div>
 
@@ -161,6 +179,7 @@
                 }
                 let rBang = Math.floor(Math.random() * 3);
                 holes[rHole].classList.add(Bang[rBang]);
+                holes[rHole].classList.add("showUp");
             }
 
             //時間到的時候要做的事情
@@ -194,6 +213,7 @@
                 hole.classList.remove("scissors");
                 hole.classList.remove("win");
                 hole.classList.remove("lose");
+                hole.classList.remove("showUp");
                 hole.style.cursor = "";
             }
             playerRound.classList.remove(playerBang);
@@ -221,6 +241,7 @@
                     hole.classList.remove("rock");
                     hole.classList.remove("paper");
                     hole.classList.remove("scissors");
+                    hole.classList.remove("showUp");
                 }
             }
         }
